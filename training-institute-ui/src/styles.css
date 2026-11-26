@@ -1,0 +1,64 @@
+/* Global styles on top of Bootstrap 5 */
+:root {
+  --app-brand: #1f3a5f;
+}
+
+body {
+  background: #f5f7fb;
+}
+
+.app-navbar {
+  background: var(--app-brand);
+}
+
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.65rem 0.75rem;
+}
+
+.table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--bs-secondary-color);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card .stat-value {
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.stat-card .stat-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+}
+
+.form-label .req {
+  color: var(--bs-danger);
+  margin-left: 2px;
+}
+
+dl.detail dt {
+  font-weight: 500;
+  color: var(--bs-secondary-color);
+}
+
+.actions-cell {
+  white-space: nowrap;
+  text-align: right;
+}

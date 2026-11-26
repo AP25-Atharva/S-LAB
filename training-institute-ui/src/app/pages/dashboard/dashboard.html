@@ -1,0 +1,142 @@
+<app-page-header title="Dashboard" subtitle="Courses, batches and enrolments at a glance">
+  <a class="btn btn-primary" routerLink="/batches/new"><i class="bi bi-calendar-plus me-1"></i>Schedule batch</a>
+  <a class="btn btn-outline-primary" routerLink="/enrolments/new"><i class="bi bi-person-plus me-1"></i>Enrol student</a>
+</app-page-header>
+
+<app-load-state [loading]="loading()" [error]="error()" />
+
+@if (data(); as d) {
+  <!-- Headline numbers -->
+  <div class="row g-3 mb-4">
+    @for (s of stats(d); track s.label) {
+      <div class="col-12 col-sm-6 col-xl-3">
+        <a class="card stat-card h-100 text-decoration-none text-body" [routerLink]="s.link">
+          <div class="card-body d-flex justify-content-between align-items-start">
+            <div>
+              <div class="text-body-secondary small mb-1">{{ s.label }}</div>
+              <div class="stat-value tabular">{{ s.value }}</div>
+              <div class="small text-body-secondary mt-1">{{ s.sub }}</div>
+            </div>
+            <div class="stat-icon bg-{{ s.tone }}-subtle text-{{ s.tone }}-emphasis"><i class="bi {{ s.icon }}"></i></div>
+          </div>
+        </a>
+      </div>
+    }
+  </div>
+
+  <div class="row g-3 mb-4">
+    <!-- Enrolment counts by status -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100">
+        <div class="card-header bg-body fw-semibold">Enrolments by status</div>
+        <div class="card-body">
+          @for (r of enrolmentBreakdown(d); track r.label) {
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small mb-1">
+                <span>{{ r.label }}</span><span class="tabular fw-semibold">{{ r.value }}</span>
+              </div>
+              <div class="progress" style="height: 8px">
+                <div class="progress-bar bg-{{ r.color }}" [style.width.%]="r.percent"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Batch counts by status -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100">
+        <div class="card-header bg-body fw-semibold">Batches by status</div>
+        <div class="card-body">
+          <div class="row g-3 text-center">
+            @for (b of batchBreakdown(d); track b.label) {
+              <div class="col-6">
+                <a class="d-block border rounded p-3 text-decoration-none text-body" routerLink="/batches"
+                   [queryParams]="{ status: b.status }">
+                  <div class="stat-value tabular">{{ b.value }}</div>
+                  <app-status-badge [status]="b.status" />
+                </a>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Running batches -->
+  <div class="card mb-4">
+    <div class="card-header bg-body d-flex justify-content-between align-items-center">
+      <span class="fw-semibold">Running batches</span>
+      <a class="small" routerLink="/batches" [queryParams]="{ status: 'RUNNING' }">View all</a>
+    </div>
+    @if (d.runningBatchList.length === 0) {
+      <div class="card-body text-body-secondary">No batches are running right now.</div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>Batch</th><th>Course</th><th>Trainer</th><th>Dates</th><th>Seats</th></tr></thead>
+          <tbody>
+            @for (b of d.runningBatchList; track b.batchId) {
+              <tr>
+                <td><a [routerLink]="['/batches', b.batchId]" class="fw-semibold">{{ b.batchCode }}</a></td>
+                <td>{{ b.courseTitle }}</td>
+                <td>{{ b.trainerName }}</td>
+                <td class="text-nowrap small">{{ b.startDate | date: 'dd MMM' }} – {{ b.endDate | date: 'dd MMM yyyy' }}</td>
+                <td><app-seat-bar [seats]="b.seats" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <div class="row g-3">
+    <!-- Upcoming -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100">
+        <div class="card-header bg-body fw-semibold">
+          Upcoming batches <span class="small fw-normal text-body-secondary">(next 30 days)</span>
+        </div>
+        <ul class="list-group list-group-flush">
+          @for (b of d.upcomingBatches; track b.batchId) {
+            <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+              <div>
+                <a [routerLink]="['/batches', b.batchId]" class="fw-semibold">{{ b.batchCode }}</a>
+                <div class="small text-body-secondary">{{ b.courseTitle }} · starts {{ b.startDate | date: 'dd MMM yyyy' }}</div>
+              </div>
+              <app-seat-bar [seats]="b.seats" />
+            </li>
+          } @empty {
+            <li class="list-group-item text-body-secondary">No upcoming batches.</li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Delayed -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100">
+        <div class="card-header bg-body fw-semibold">
+          Needs attention
+          <span class="small fw-normal text-body-secondary">(planned but start date has passed)</span>
+        </div>
+        <ul class="list-group list-group-flush">
+          @for (b of d.delayedBatches; track b.batchId) {
+            <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+              <div>
+                <a [routerLink]="['/batches', b.batchId]" class="fw-semibold">{{ b.batchCode }}</a>
+                <div class="small text-danger-emphasis">Was due {{ b.startDate | date: 'dd MMM yyyy' }}</div>
+              </div>
+              <app-status-badge [status]="b.status" />
+            </li>
+          } @empty {
+            <li class="list-group-item text-body-secondary">Nothing overdue.</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+}

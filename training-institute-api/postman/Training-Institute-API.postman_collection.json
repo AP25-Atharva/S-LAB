@@ -1,0 +1,1103 @@
+{
+  "info": {
+    "name": "Training Institute API",
+    "description": "Course and Batch Management System - Spring Boot REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "List courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search active courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses?search=java&active=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "java"
+                },
+                {
+                  "key": "active",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get course by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"DOC-601\",\n  \"title\": \"Docker and Kubernetes\",\n  \"category\": \"Cloud\",\n  \"durationHours\": 45,\n  \"fee\": 16000.0,\n  \"description\": \"Containers and orchestration\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"JAV-101\",\n  \"title\": \"Java Full Stack Development\",\n  \"category\": \"Cloud\",\n  \"durationHours\": 45,\n  \"fee\": 26000.0,\n  \"description\": \"Containers and orchestration\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Deactivate course",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/6/status?active=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "6",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "false"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete course (no batches)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/6",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "6"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create course - invalid (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"bad code!\",\n  \"title\": \"\",\n  \"category\": \"X\",\n  \"durationHours\": 0,\n  \"fee\": -1\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trainers",
+      "item": [
+        {
+          "name": "List trainers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trainers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trainers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get trainer by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trainers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trainers",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create trainer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trainers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trainers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trainerCode\": \"TR-006\",\n  \"fullName\": \"Neha Verma\",\n  \"email\": \"neha.verma@skilllab.in\",\n  \"phone\": \"9876543215\",\n  \"expertise\": \"Docker, Kubernetes\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update trainer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/trainers/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trainers",
+                "5"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trainerCode\": \"TR-005\",\n  \"fullName\": \"Kavita Joshi\",\n  \"email\": \"kavita.joshi@skilllab.in\",\n  \"phone\": \"9876543214\",\n  \"expertise\": \"Testing, Selenium, Cypress\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Deactivate trainer",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trainers/5/status?active=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trainers",
+                "5",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "false"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete trainer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trainers/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trainers",
+                "5"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "List students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students?search=patil&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "patil"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get student by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentCode\": \"ST-013\",\n  \"fullName\": \"Tanvi Jadhav\",\n  \"email\": \"tanvi.jadhav@mail.com\",\n  \"phone\": \"9000000013\",\n  \"qualification\": \"B.E. Computer\",\n  \"registrationDate\": \"2026-11-20\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentCode\": \"ST-001\",\n  \"fullName\": \"Aarav Patil\",\n  \"email\": \"aarav.patil@mail.com\",\n  \"phone\": \"9000000099\",\n  \"qualification\": \"B.E. Computer\",\n  \"registrationDate\": \"2026-07-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Deactivate student",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/12/status?status=INACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "12",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/12",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "12"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Batches",
+      "item": [
+        {
+          "name": "List batches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter running batches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches?status=RUNNING",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "RUNNING"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get batch by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Batch summary + roster",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/1/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "1",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Schedule batch",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchCode\": \"DOC-FEB27\",\n  \"courseId\": 1,\n  \"trainerId\": 5,\n  \"startDate\": \"2027-02-01\",\n  \"endDate\": \"2027-03-15\",\n  \"mode\": \"ONLINE\",\n  \"capacity\": 15\n}"
+            }
+          }
+        },
+        {
+          "name": "Update batch dates and trainer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "5"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchCode\": \"SQL-JAN27\",\n  \"courseId\": 5,\n  \"trainerId\": 3,\n  \"startDate\": \"2027-01-18\",\n  \"endDate\": \"2027-02-12\",\n  \"mode\": \"HYBRID\",\n  \"capacity\": 12\n}"
+            }
+          }
+        },
+        {
+          "name": "Cancel batch",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/5/status?status=CANCELLED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "5",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "CANCELLED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete batch",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "5"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enrolments",
+      "item": [
+        {
+          "name": "List enrolments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Roster of a batch",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments?batchId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments"
+              ],
+              "query": [
+                {
+                  "key": "batchId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get enrolment by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Enrol student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 8,\n  \"batchId\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Enrol as waitlisted",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 7,\n  \"batchId\": 1,\n  \"status\": \"WAITLISTED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update attendance",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"batchId\": 1,\n  \"status\": \"ENROLLED\",\n  \"attendancePercentage\": 94.5,\n  \"remarks\": \"Excellent\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Withdraw enrolment",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments/7/status?status=WITHDRAWN",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments",
+                "7",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "WITHDRAWN"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete withdrawn enrolment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments/10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments",
+                "10"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Business rule checks (expected errors)",
+      "item": [
+        {
+          "name": "Enrol into FULL batch -> 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 8,\n  \"batchId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Duplicate active enrolment -> 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"batchId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Enrol inactive student -> 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enrolments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "enrolments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 12,\n  \"batchId\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete course with batches -> 409",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete batch with enrolments -> 409",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Trainer double booking -> 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchCode\": \"CLASH-01\",\n  \"courseId\": 1,\n  \"trainerId\": 1,\n  \"startDate\": \"2026-12-01\",\n  \"endDate\": \"2026-12-20\",\n  \"mode\": \"ONLINE\",\n  \"capacity\": 15\n}"
+            }
+          }
+        },
+        {
+          "name": "End date before start -> 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchCode\": \"BAD-01\",\n  \"courseId\": 1,\n  \"trainerId\": 5,\n  \"startDate\": \"2027-02-01\",\n  \"endDate\": \"2027-01-01\",\n  \"mode\": \"ONLINE\",\n  \"capacity\": 15\n}"
+            }
+          }
+        },
+        {
+          "name": "Duplicate course code -> 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"JAV-101\",\n  \"title\": \"Docker and Kubernetes\",\n  \"category\": \"Cloud\",\n  \"durationHours\": 45,\n  \"fee\": 16000.0,\n  \"description\": \"Containers and orchestration\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Not found -> 404",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
