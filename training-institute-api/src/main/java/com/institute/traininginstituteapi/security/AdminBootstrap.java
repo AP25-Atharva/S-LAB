@@ -53,8 +53,10 @@ public class AdminBootstrap implements ApplicationRunner {
                     username);
             return;
         }
-        if (password.length() < 8) {
-            log.error("ADMIN_PASSWORD must be at least 8 characters - first admin was NOT created.");
+        try {
+            PasswordPolicy.check(password, name, "ADMIN_PASSWORD");
+        } catch (RuntimeException e) {
+            log.error("ADMIN_PASSWORD rejected ({}) - first admin was NOT created.", e.getMessage());
             return;
         }
         AppUser admin = new AppUser();

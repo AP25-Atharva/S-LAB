@@ -9,6 +9,7 @@ import com.institute.traininginstituteapi.exception.BusinessRuleException;
 import com.institute.traininginstituteapi.exception.DuplicateResourceException;
 import com.institute.traininginstituteapi.exception.ResourceNotFoundException;
 import com.institute.traininginstituteapi.repository.AppUserRepository;
+import com.institute.traininginstituteapi.security.PasswordPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,7 @@ public class UserService {
         if (users.existsByUsernameIgnoreCase(username)) {
             throw new DuplicateResourceException("username", "Username " + username + " is already taken");
         }
+        PasswordPolicy.check(req.password(), username, "password");
         AppUser user = new AppUser();
         user.setUsername(username);
         user.setFullName(Text.clean(req.fullName()));
@@ -69,7 +71,9 @@ public class UserService {
     }
 
     public void resetPassword(Long id, String newPassword) {
-        setPassword(get(id), newPassword);
+        AppUser user = get(id);
+        PasswordPolicy.check(newPassword, user.getUsername(), "newPassword");
+        setPassword(user, newPassword);
     }
 
     public void delete(Long id, Long currentUserId) {

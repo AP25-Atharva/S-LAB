@@ -15,7 +15,7 @@ public record UserCreateRequest(
         @Size(min = 2, max = 100, message = "Full name must be 2-100 characters")
         String fullName,
         @NotBlank(message = "Password is required")
-        @Size(min = 8, max = 72, message = "Password must be 8-72 characters")
+        @Size(min = 10, max = 72, message = "Password must be 10-72 characters")
         String password,
         @NotNull(message = "Role is required (ADMIN or STAFF)")
         UserRole role,

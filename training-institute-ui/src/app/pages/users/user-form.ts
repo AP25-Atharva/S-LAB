@@ -5,6 +5,7 @@ import { UserService } from '../../core/api.services';
 import { applyServerErrors, toApiError } from '../../core/api-error';
 import { AuthService } from '../../core/auth.service';
 import { UserRole } from '../../core/models';
+import { PASSWORD_HINT, PASSWORD_PATTERN_MESSAGE, PASSWORD_VALIDATORS } from '../../core/password-rules';
 import { ToastService } from '../../core/ui.services';
 import { FieldError } from '../../shared/field-error';
 import { LoadState, PageHeader } from '../../shared/page-bits';
@@ -43,8 +44,8 @@ const USERNAME_PATTERN = /^[A-Za-z0-9._-]+$/;
                 <label class="form-label" for="password">Initial password<span class="req">*</span></label>
                 <input id="password" type="password" class="form-control" formControlName="password"
                        autocomplete="new-password" [class.is-invalid]="invalid('password')" />
-                <div class="form-text">At least 8 characters. Share it privately; they can change it after signing in.</div>
-                <app-field-error [control]="form.get('password')" label="Password" />
+                <div class="form-text">{{ hint }} Share it privately; they can change it after signing in.</div>
+                <app-field-error [control]="form.get('password')" label="Password" [patternMessage]="patternMessage" />
               </div>
             }
             <div class="col-12 col-md-5">
@@ -82,7 +83,8 @@ const USERNAME_PATTERN = /^[A-Za-z0-9._-]+$/;
             <label class="form-label" for="newPassword">New password</label>
             <input id="newPassword" type="password" class="form-control" formControlName="newPassword"
                    autocomplete="new-password" [class.is-invalid]="resetInvalid()" />
-            <app-field-error [control]="resetForm.get('newPassword')" label="New password" />
+            <div class="form-text">{{ hint }}</div>
+            <app-field-error [control]="resetForm.get('newPassword')" label="New password" [patternMessage]="patternMessage" />
           </div>
           <div class="card-footer bg-body d-flex justify-content-end">
             <button class="btn btn-outline-danger" type="submit" [disabled]="resetting()">
@@ -107,14 +109,16 @@ export class UserFormPage implements OnInit {
   readonly form = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(USERNAME_PATTERN)]],
     fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
+    password: ['', PASSWORD_VALIDATORS],
     role: ['STAFF' as UserRole, Validators.required],
     active: [true],
   });
   readonly resetForm = this.fb.group({
-    newPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
+    newPassword: ['', PASSWORD_VALIDATORS],
   });
 
+  readonly hint = PASSWORD_HINT;
+  readonly patternMessage = PASSWORD_PATTERN_MESSAGE;
   readonly loading = signal(false);
   readonly loadError = signal<string | null>(null);
   readonly saving = signal(false);

@@ -84,15 +84,17 @@ Every page and every `/api` endpoint (except `POST /api/auth/login` and `GET /ap
 | **STAFF** | View, add and edit records, change statuses. Cannot delete or manage users |
 
 How it works:
-- `POST /api/auth/login` checks the BCrypt-hashed password and returns a signed JWT (HS256, valid 8 hours). The UI sends it as `Authorization: Bearer <token>`.
+- `POST /api/auth/login` checks the BCrypt-hashed password and returns a signed JWT (HS256, valid 4 hours). The UI sends it as `Authorization: Bearer <token>`.
 - The user's role and active flag are re-read from the database on every request, so deactivating someone, changing their role or resetting their password signs them out immediately.
-- After 5 wrong passwords for a username, that username is locked for 15 minutes.
+- Login guessing is limited over 15-minute windows: 5 failures per username from one IP address (a stranger can't lock out the real user on another network), 20 failures per IP across all usernames, and 50 failures per username in total. Failed logins are logged with the username and IP.
+- Passwords must be 10-72 characters with at least one letter and one number, can't be a common password, and can't contain the username.
+- The website sends security headers (Content-Security-Policy, X-Frame-Options and others; see `training-institute-ui/vercel.json`), so it can't be framed by other sites and only runs its own scripts.
 - There must always be at least one active admin. Admins can't demote, deactivate or delete themselves.
 
 | Environment variable | Purpose |
 |---|---|
 | `JWT_SECRET` | 32+ random characters used to sign tokens. **Required in production**; without it a random key is used and everyone is signed out on restart |
-| `JWT_EXPIRY_HOURS` | Token lifetime (default 8) |
+| `JWT_EXPIRY_HOURS` | Token lifetime (default 4) |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_FULL_NAME` | Create the first admin while the user table is empty; ignored afterwards and safe to remove |
 
 ---

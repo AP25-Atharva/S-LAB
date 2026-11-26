@@ -21,7 +21,7 @@ public class TokenService {
     private final JwtEncoder encoder;
     private final Duration lifetime;
 
-    public TokenService(JwtEncoder encoder, @Value("${app.jwt.expiry-hours:8}") long expiryHours) {
+    public TokenService(JwtEncoder encoder, @Value("${app.jwt.expiry-hours:4}") long expiryHours) {
         this.encoder = encoder;
         this.lifetime = Duration.ofHours(expiryHours);
     }

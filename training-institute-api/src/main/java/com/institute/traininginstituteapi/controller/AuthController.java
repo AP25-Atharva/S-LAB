@@ -4,8 +4,10 @@ import com.institute.traininginstituteapi.dto.ChangePasswordRequest;
 import com.institute.traininginstituteapi.dto.LoginRequest;
 import com.institute.traininginstituteapi.dto.LoginResponse;
 import com.institute.traininginstituteapi.dto.UserResponse;
+import com.institute.traininginstituteapi.security.ClientIp;
 import com.institute.traininginstituteapi.security.CurrentUser;
 import com.institute.traininginstituteapi.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,8 +25,8 @@ public class AuthController {
 
     /** Public. Returns a token to send as "Authorization: Bearer <token>". */
     @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
+    public LoginResponse login(@Valid @RequestBody LoginRequest request, HttpServletRequest http) {
+        return authService.login(request, ClientIp.of(http));
     }
 
     @GetMapping("/me")

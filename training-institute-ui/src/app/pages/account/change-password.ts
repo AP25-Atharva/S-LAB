@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Va
 import { Router, RouterLink } from '@angular/router';
 import { applyServerErrors, toApiError } from '../../core/api-error';
 import { AuthService } from '../../core/auth.service';
+import { PASSWORD_HINT, PASSWORD_PATTERN_MESSAGE, PASSWORD_VALIDATORS } from '../../core/password-rules';
 import { ToastService } from '../../core/ui.services';
 import { FieldError } from '../../shared/field-error';
 import { PageHeader } from '../../shared/page-bits';
@@ -38,8 +39,8 @@ function matchNew(group: AbstractControl): ValidationErrors | null {
           <label class="form-label" for="newPassword">New password<span class="req">*</span></label>
           <input id="newPassword" type="password" class="form-control" formControlName="newPassword"
                  autocomplete="new-password" [class.is-invalid]="invalid('newPassword')" />
-          <div class="form-text">At least 8 characters.</div>
-          <app-field-error [control]="form.get('newPassword')" label="New password" />
+          <div class="form-text">{{ hint }}</div>
+          <app-field-error [control]="form.get('newPassword')" label="New password" [patternMessage]="patternMessage" />
         </div>
         <div>
           <label class="form-label" for="confirmPassword">Confirm new password<span class="req">*</span></label>
@@ -65,10 +66,12 @@ export class ChangePasswordPage {
 
   readonly form = inject(FormBuilder).nonNullable.group({
     currentPassword: ['', Validators.required],
-    newPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
+    newPassword: ['', PASSWORD_VALIDATORS],
     confirmPassword: ['', Validators.required],
   }, { validators: matchNew });
 
+  readonly hint = PASSWORD_HINT;
+  readonly patternMessage = PASSWORD_PATTERN_MESSAGE;
   readonly saving = signal(false);
   readonly formError = signal<string | null>(null);
 
