@@ -47,12 +47,18 @@ public class AdminBootstrap implements ApplicationRunner {
             log.warn("No user accounts exist yet. Set ADMIN_USERNAME and ADMIN_PASSWORD and restart to create the first admin.");
             return;
         }
+        String name = username == null ? "" : username.trim().toLowerCase();
+        if (!name.matches("^[a-z0-9._-]{3,50}$")) {
+            log.error("ADMIN_USERNAME '{}' is invalid (3-50 letters, digits, '.', '-' or '_', no spaces) - first admin was NOT created.",
+                    username);
+            return;
+        }
         if (password.length() < 8) {
             log.error("ADMIN_PASSWORD must be at least 8 characters - first admin was NOT created.");
             return;
         }
         AppUser admin = new AppUser();
-        admin.setUsername(username.trim().toLowerCase());
+        admin.setUsername(name);
         admin.setFullName(fullName.trim());
         admin.setPasswordHash(passwordEncoder.encode(password));
         admin.setRole(UserRole.ADMIN);
