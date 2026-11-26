@@ -7,6 +7,7 @@ import { debounceTime, merge } from 'rxjs';
 import { BatchService, CourseService } from '../../core/api.services';
 import { toApiError } from '../../core/api-error';
 import { BATCH_STATUSES, Batch, Course } from '../../core/models';
+import { AuthService } from '../../core/auth.service';
 import { ConfirmService, ToastService } from '../../core/ui.services';
 import { LoadState, PageHeader } from '../../shared/page-bits';
 import { SeatBar } from '../../shared/seat-bar';
@@ -69,8 +70,10 @@ import { StatusBadge } from '../../shared/status-badge';
                       <i class="bi bi-eye"></i></a>
                     <a class="btn btn-sm btn-outline-secondary ms-1" [routerLink]="['/batches', b.batchId, 'edit']" title="Edit">
                       <i class="bi bi-pencil"></i></a>
-                    <button class="btn btn-sm btn-outline-danger ms-1" (click)="remove(b)" title="Delete">
-                      <i class="bi bi-trash"></i></button>
+                    @if (auth.isAdmin()) {
+                      <button class="btn btn-sm btn-outline-danger ms-1" (click)="remove(b)" title="Delete">
+                        <i class="bi bi-trash"></i></button>
+                    }
                   </td>
                 </tr>
               }
@@ -86,6 +89,7 @@ export class BatchListPage implements OnInit {
   private readonly courseApi = inject(CourseService);
   private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
+  readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 

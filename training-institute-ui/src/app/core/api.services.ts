@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import {
   Batch, BatchRequest, BatchStatus, BatchSummary, Course, CourseRequest, Dashboard,
   Enrolment, EnrolmentRequest, EnrolmentStatus, Student, StudentRequest, StudentStatus,
-  Trainer, TrainerRequest,
+  Trainer, TrainerRequest, User, UserCreateRequest, UserUpdateRequest,
 } from './models';
 
 export type QueryParams = Record<string, string | number | boolean | null | undefined>;
@@ -103,5 +103,31 @@ export class DashboardService {
   private readonly http = inject(HttpClient);
   get(): Observable<Dashboard> {
     return this.http.get<Dashboard>(`${environment.apiUrl}/dashboard`);
+  }
+}
+
+/** Staff accounts - ADMIN only. */
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private readonly http = inject(HttpClient);
+  private readonly url = `${environment.apiUrl}/users`;
+
+  list(): Observable<User[]> {
+    return this.http.get<User[]>(this.url);
+  }
+  get(id: number): Observable<User> {
+    return this.http.get<User>(`${this.url}/${id}`);
+  }
+  create(body: UserCreateRequest): Observable<User> {
+    return this.http.post<User>(this.url, body);
+  }
+  update(id: number, body: UserUpdateRequest): Observable<User> {
+    return this.http.put<User>(`${this.url}/${id}`, body);
+  }
+  resetPassword(id: number, newPassword: string): Observable<void> {
+    return this.http.put<void>(`${this.url}/${id}/password`, { newPassword });
+  }
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
   }
 }

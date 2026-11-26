@@ -49,17 +49,20 @@ cd training-institute-api
 mysql -u root -p < database/schema.sql
 mysql -u root -p training_institute < database/sample-data.sql   # demo data – clears existing rows first
 ```
+Upgrading a database created before login was added? Run `mysql -u root -p < database/migrations/001-add-app-user.sql`.
 
 ### 2. Backend (port 8080)
 Give the API your MySQL password. Do this **one** of two ways:
 - copy `src/main/resources/application-local.properties.example` to `application-local.properties` and set `spring.datasource.password` (this file is git-ignored), **or**
 - set the `DB_PASSWORD` environment variable (`DB_URL` and `DB_USERNAME` are also supported).
 
+The **first time**, also set an admin password so the first account gets created (only happens while there are no users):
+
 ```bash
 cd training-institute-api
-./mvnw spring-boot:run
+ADMIN_USERNAME=admin ADMIN_PASSWORD='choose-a-password' ./mvnw spring-boot:run
 ```
-To check it's running, open http://localhost:8080/api/dashboard. It should return JSON.
+Later runs: just `./mvnw spring-boot:run`. To check it's running, open http://localhost:8080/api/health. It should return `{"status":"UP"}`.
 
 ### 3. Frontend (port 4200)
 ```bash
@@ -67,7 +70,30 @@ cd training-institute-ui
 npm install
 npm start
 ```
-Then open **http://localhost:4200**.
+Then open **http://localhost:4200** and sign in with the admin account.
+
+---
+
+## Login & roles
+
+Every page and every `/api` endpoint (except `POST /api/auth/login` and `GET /api/health`) needs a signed-in user. There is no public sign-up: an admin creates accounts on the **Users** page.
+
+| Role | Can do |
+|---|---|
+| **ADMIN** | Everything, including deleting records and managing users |
+| **STAFF** | View, add and edit records, change statuses. Cannot delete or manage users |
+
+How it works:
+- `POST /api/auth/login` checks the BCrypt-hashed password and returns a signed JWT (HS256, valid 8 hours). The UI sends it as `Authorization: Bearer <token>`.
+- The user's role and active flag are re-read from the database on every request, so deactivating someone, changing their role or resetting their password signs them out immediately.
+- After 5 wrong passwords for a username, that username is locked for 15 minutes.
+- There must always be at least one active admin. Admins can't demote, deactivate or delete themselves.
+
+| Environment variable | Purpose |
+|---|---|
+| `JWT_SECRET` | 32+ random characters used to sign tokens. **Required in production**; without it a random key is used and everyone is signed out on restart |
+| `JWT_EXPIRY_HOURS` | Token lifetime (default 8) |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_FULL_NAME` | Create the first admin while the user table is empty; ignored afterwards and safe to remove |
 
 ---
 
@@ -116,6 +142,11 @@ Base URL: `http://localhost:8080/api`
 | Batches | `GET /batches` (`?search=&status=&courseId=&trainerId=`), `GET /batches/{id}`, `GET /batches/{id}/summary`, `POST`, `PUT /{id}`, `PATCH /{id}/status?status=`, `DELETE /{id}` |
 | Enrolments | `GET /enrolments` (`?search=&status=&batchId=&studentId=`), `GET /enrolments/{id}`, `POST`, `PUT /{id}`, `PATCH /{id}/status?status=`, `DELETE /{id}` |
 | Dashboard | `GET /dashboard` |
+| Auth | `POST /auth/login` (public), `GET /auth/me`, `POST /auth/change-password` |
+| Users (ADMIN) | `GET /users`, `GET /users/{id}`, `POST /users`, `PUT /users/{id}`, `PUT /users/{id}/password`, `DELETE /users/{id}` |
+| Health | `GET /health` (public) |
+
+All endpoints except login and health need `Authorization: Bearer <token>`. `DELETE` endpoints need the ADMIN role.
 
 Request and response examples are in [training-institute-api/README.md](training-institute-api/README.md) and in the Postman collection.
 
@@ -123,10 +154,10 @@ Request and response examples are in [training-institute-api/README.md](training
 
 ## Testing
 
-- **Postman:** import `training-institute-api/postman/Training-Institute-API.postman_collection.json`. The *Business rule checks* folder shows every rule being rejected with the expected status code.
+- **Postman:** import `training-institute-api/postman/Training-Institute-API.postman_collection.json`. Call `POST /api/auth/login` first and put the returned token in the collection's *Authorization → Bearer Token*. The *Business rule checks* folder shows every rule being rejected with the expected status code.
 - **Test-case table:** [docs/test-cases.md](docs/test-cases.md) has **46 cases, all passing**, run against the live API. To re-run them and regenerate the table while the API is running:
   ```bash
-  python3 docs/run-api-tests.py
+  BW_USER=admin BW_PASSWORD='your-admin-password' python3 docs/run-api-tests.py
   ```
   The script creates temporary `TC-*` records and deletes them at the end.
 
@@ -134,4 +165,4 @@ Request and response examples are in [training-institute-api/README.md](training
 
 ## Out of scope
 
-As the problem statement specifies, the following are not included: LMS or online content delivery, fee payment, exams, authentication, and AI features.
+As the problem statement specifies, the following are not included: LMS or online content delivery, fee payment, exams, and AI features. (Staff login was added later; see *Login & roles*.)

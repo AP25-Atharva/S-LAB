@@ -1,15 +1,19 @@
-"""Runs the BatchWise API test cases against localhost:8080 and writes docs/test-cases.md (usage: python3 docs/run-api-tests.py).
+"""Runs the BatchWise API test cases and writes docs/test-cases.md.
+Usage: BW_USER=admin BW_PASSWORD=... python3 docs/run-api-tests.py   (an ADMIN account, because the cases delete records)
+Optional: BW_API=https://... to target another server (default http://localhost:8080/api).
 Temporary records use TC-* codes and are deleted at the end (cleanup also counts as test steps)."""
 import datetime, json, os, urllib.error, urllib.request
 
-BASE = 'http://localhost:8080/api'
+BASE = os.environ.get('BW_API', 'http://localhost:8080/api').rstrip('/')
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test-cases.md')
 rows, ids = [], {}
+TOKEN = None
 
 def call(method, path, body=None):
     data = json.dumps(body).encode() if body is not None else None
     req = urllib.request.Request(BASE + path, data=data, method=method,
-                                 headers={'Content-Type': 'application/json'})
+                                 headers={'Content-Type': 'application/json',
+                                          **({'Authorization': 'Bearer ' + TOKEN} if TOKEN else {})})
     try:
         with urllib.request.urlopen(req) as r:
             raw = r.read()
@@ -17,6 +21,20 @@ def call(method, path, body=None):
     except urllib.error.HTTPError as e:
         raw = e.read()
         return e.code, (json.loads(raw) if raw else None)
+
+def login():
+    global TOKEN
+    user, password = os.environ.get('BW_USER'), os.environ.get('BW_PASSWORD')
+    if not user or not password:
+        raise SystemExit('Set BW_USER and BW_PASSWORD to an ADMIN account, e.g. BW_USER=admin BW_PASSWORD=... python3 docs/run-api-tests.py')
+    status, body = call('POST', '/auth/login', {'username': user, 'password': password})
+    if status != 200:
+        raise SystemExit(f'Login failed ({status}): {body}')
+    if body['user']['role'] != 'ADMIN':
+        raise SystemExit('BW_USER must be an ADMIN account (the test cases delete records)')
+    TOKEN = body['token']
+
+login()
 
 def short(body):
     return json.dumps(body, separators=(',', ':')) if body is not None else '—'

@@ -89,3 +89,18 @@ CREATE TABLE IF NOT EXISTS enrolment (
   CONSTRAINT enrolment_ibfk_2 FOREIGN KEY (batch_id)   REFERENCES batch (batch_id),
   CONSTRAINT enrolment_chk_1 CHECK (attendance_percentage BETWEEN 0 AND 100)
 ) ENGINE=InnoDB;
+
+-- Staff accounts that can log in to BatchWise (ADMIN: everything incl. delete and users; STAFF: no delete)
+CREATE TABLE IF NOT EXISTS app_user (
+  user_id              BIGINT       NOT NULL AUTO_INCREMENT,
+  username             VARCHAR(50)  NOT NULL,
+  full_name            VARCHAR(100) NOT NULL,
+  password_hash        VARCHAR(100) NOT NULL,
+  role                 ENUM('ADMIN','STAFF') NOT NULL DEFAULT 'STAFF',
+  active               TINYINT(1)   NOT NULL DEFAULT 1,
+  password_changed_at  DATETIME     NOT NULL,
+  last_login_at        DATETIME     NULL,
+  created_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id),
+  UNIQUE KEY username (username)
+) ENGINE=InnoDB;

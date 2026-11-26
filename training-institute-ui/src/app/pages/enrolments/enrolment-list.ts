@@ -7,6 +7,7 @@ import { debounceTime, merge } from 'rxjs';
 import { BatchService, EnrolmentService } from '../../core/api.services';
 import { toApiError } from '../../core/api-error';
 import { ENROLMENT_STATUSES, Batch, Enrolment } from '../../core/models';
+import { AuthService } from '../../core/auth.service';
 import { ConfirmService, ToastService } from '../../core/ui.services';
 import { LoadState, PageHeader } from '../../shared/page-bits';
 import { StatusBadge } from '../../shared/status-badge';
@@ -77,8 +78,10 @@ import { StatusBadge } from '../../shared/status-badge';
                         <i class="bi bi-box-arrow-right"></i></button>
                     }
                     @if (e.status === 'WITHDRAWN' || e.status === 'WAITLISTED') {
-                      <button class="btn btn-sm btn-outline-danger ms-1" (click)="remove(e)" title="Delete">
-                        <i class="bi bi-trash"></i></button>
+                      @if (auth.isAdmin()) {
+                        <button class="btn btn-sm btn-outline-danger ms-1" (click)="remove(e)" title="Delete">
+                          <i class="bi bi-trash"></i></button>
+                      }
                     }
                   </td>
                 </tr>
@@ -95,6 +98,7 @@ export class EnrolmentListPage implements OnInit {
   private readonly batchApi = inject(BatchService);
   private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
+  readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly statuses = ENROLMENT_STATUSES;

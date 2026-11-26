@@ -6,6 +6,7 @@ import { debounceTime, merge } from 'rxjs';
 import { TrainerService } from '../../core/api.services';
 import { toApiError } from '../../core/api-error';
 import { Trainer } from '../../core/models';
+import { AuthService } from '../../core/auth.service';
 import { ConfirmService, ToastService } from '../../core/ui.services';
 import { LoadState, PageHeader } from '../../shared/page-bits';
 import { StatusBadge } from '../../shared/status-badge';
@@ -62,8 +63,10 @@ import { StatusBadge } from '../../shared/status-badge';
                     <button class="btn btn-sm btn-outline-secondary ms-1" (click)="toggle(t)"
                             [title]="t.active ? 'Deactivate' : 'Activate'">
                       <i class="bi" [class.bi-toggle-on]="t.active" [class.bi-toggle-off]="!t.active"></i></button>
-                    <button class="btn btn-sm btn-outline-danger ms-1" (click)="remove(t)" title="Delete">
-                      <i class="bi bi-trash"></i></button>
+                    @if (auth.isAdmin()) {
+                      <button class="btn btn-sm btn-outline-danger ms-1" (click)="remove(t)" title="Delete">
+                        <i class="bi bi-trash"></i></button>
+                    }
                   </td>
                 </tr>
               }
@@ -78,6 +81,7 @@ export class TrainerListPage implements OnInit {
   private readonly api = inject(TrainerService);
   private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
+  readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly search = new FormControl('', { nonNullable: true });

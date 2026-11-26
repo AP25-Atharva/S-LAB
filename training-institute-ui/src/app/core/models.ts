@@ -138,3 +138,36 @@ export interface Dashboard {
   upcomingBatches: Batch[];
   delayedBatches: Batch[];
 }
+
+// ---- Login & users ----
+export type UserRole = 'ADMIN' | 'STAFF';
+
+export interface User {
+  userId: number;
+  username: string;
+  fullName: string;
+  role: UserRole;
+  active: boolean;
+  lastLoginAt: string | null;
+  createdAt: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  expiresAt: string;
+  user: User;
+}
+
+export interface UserCreateRequest {
+  username: string;
+  fullName: string;
+  password: string;
+  role: UserRole;
+  active: boolean;
+}
+
+export interface UserUpdateRequest {
+  fullName: string;
+  role: UserRole;
+  active: boolean;
+}

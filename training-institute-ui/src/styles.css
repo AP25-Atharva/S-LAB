@@ -62,3 +62,47 @@ dl.detail dt {
   white-space: nowrap;
   text-align: right;
 }
+
+/* ---- Login & account ---- */
+.login-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem 1rem;
+  background: linear-gradient(160deg, var(--app-brand) 0%, #2d5a8c 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 26rem;
+  border: 0;
+  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.25);
+}
+
+.login-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 0.75rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  color: #fff;
+  background: var(--app-brand);
+}
+
+.app-navbar .avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--app-brand);
+  background: #fff;
+}
+
+.app-navbar .dropdown-menu {
+  min-width: 14rem;
+}
